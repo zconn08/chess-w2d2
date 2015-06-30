@@ -1,19 +1,27 @@
-class Board
+require_relative 'display.rb'
+require 'colorize'
 
+class Board
+  include Display
 
   def initialize
-    @board = Array.new(8) { Array.new (8) }
+    @board = Array.new(8) { Array.new(8,"_") }
+    @cursor = [0,0]
   end
 
-
-private
   def render
-    @board.each do |row|
-      row.each do |cell|
-        print cell
+    @board.each_with_index do |row,i|
+      row.each_with_index do |cell,j|
+        if  [i,j] == @cursor
+          print cell.colorize(:background => :yellow)
+        else
+          print cell
+        end
       end
       puts
     end
   end
+
+
 
 end
