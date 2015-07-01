@@ -1,4 +1,4 @@
-require_relative 'player'
+# require_relative 'player'
 
 module Display
 
@@ -19,6 +19,12 @@ module Display
       potential_x, potential_y = @cursor[0] + dx, @cursor[1] + dy
       @cursor = [potential_x, potential_y] if on_board?([potential_x,potential_y])
     end
+  end
+
+  def debugging_output
+    puts "Cursor: #{@cursor}"
+    puts "Position: #{self[@cursor].pos}"
+    puts "Moves: #{self[@cursor].moves}"
   end
 
 

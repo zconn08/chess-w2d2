@@ -19,10 +19,11 @@ class SlidingPiece < Piece
 
         if @board.empty_space?(possible_position)
           potential_moves << possible_position
+          next
         elsif check_enemy_color(possible_position)
           potential_moves << possible_position
-          break
         end
+        break
 
       end
     end
