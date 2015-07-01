@@ -1,5 +1,3 @@
-#refactor pieces
-#check
 #commit to git
 
 require 'byebug'
@@ -59,7 +57,7 @@ class Board
       row.each_with_index do |cell,col_idx|
         if  [row_idx,col_idx] == @cursor
           print " #{cell.symbol} ".colorize(:background => :yellow)
-        elsif self[@cursor].moves.include?([row_idx,col_idx])
+        elsif self[@cursor].valid_moves.include?([row_idx,col_idx])
           print " #{cell.symbol} ".colorize(:background => :green)
         elsif (row_idx.odd? && col_idx.even?) || (row_idx.even? && col_idx.odd?)
           print " #{cell.symbol} ".colorize(:background => :red)
@@ -112,6 +110,14 @@ class Board
     all_color_moves
   end
 
+  def all_color_positions(color)
+      all_color_positions = []
+      @board.flatten.each do |cell|
+        all_color_positions << cell.pos if cell.color == color
+      end
+      all_color_positions
+  end
+
   def in_check?(color)
     all_color_moves(other_color(color)).include?(king_position(color))
   end
@@ -144,8 +150,16 @@ class Board
     self[pos].is_a?(EmptySpace)
   end
 
+  def occupied?
+    !empty_space?(@cursor)
+  end
+
   def length
     @board.length
+  end
+
+  def game_over?
+    check_mate?("white") || check_mate?("black")
   end
 end
 

@@ -32,6 +32,7 @@ module Display
     puts "In check? Black: #{self.in_check?("black")}"
     puts "Checkmate White: #{self.check_mate?("white")}"
     puts "Checkmate Black: #{self.check_mate?("black")}"
+    puts "White postions: #{self.all_color_positions("white")}"
   end
 
 
