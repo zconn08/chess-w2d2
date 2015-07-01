@@ -19,12 +19,12 @@ class Game
 
   def take_turn
     #put statement
-    @board.render
+    system('clear')
     loop do
+      @board.render
       movement = @current_player.get_cursor_movement
       @board.move_cursor(movement)
       system('clear')
-      @board.render
     end
   end
 

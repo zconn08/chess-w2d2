@@ -12,14 +12,14 @@ module Display
   }
 
   def move_cursor(player_input)
+    exit if player_input == "q"
     direction = MOVES[player_input]
-    dx, dy = direction
-    potential_x, potential_y = @cursor[0] + dx, @cursor[1] + dy
-    if potential_x.between?(0,7) && potential_y.between?(0,7)
-      @cursor = [@cursor[0] + dx, @cursor[1] + dy]
+    unless direction.nil?
+      dx, dy = direction
+      potential_x, potential_y = @cursor[0] + dx, @cursor[1] + dy
+      @cursor = [potential_x, potential_y] if on_board?([potential_x,potential_y])
     end
   end
-
 
 
 end
