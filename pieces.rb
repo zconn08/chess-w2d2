@@ -38,8 +38,8 @@ class EmptySpace
 end
 
 class Pawn < Piece
-  PAWN_VECTORS = [[1,0],[2,0]]
-  PAWN_KILL_VECTORS = [[1,1],[1,-1]]
+  PAWN_DIRECTIONS = [[1,0],[2,0]]
+  PAWN_KILL_DIRECTIONS = [[1,1],[1,-1]]
   attr_accessor :symbol, :moved
 
   def initialize(board, pos, color)
@@ -67,8 +67,8 @@ class Pawn < Piece
   def check_non_kill_vectors
     potential_non_kill_moves = []
 
-    color_change(pawn_vectors).each do |vector|
-      possible_position = [@pos[0] + vector[0],@pos[1] + vector[1]]
+    color_change(pawn_vectors).each do |direction|
+      possible_position = [@pos[0] + direction[0],@pos[1] + direction[1]]
       next unless @board.on_board?(possible_position) && @board.empty_space?(possible_position)
         potential_non_kill_moves << possible_position
       end
@@ -79,8 +79,8 @@ class Pawn < Piece
   def check_kill_vectors
     potential_kill_moves = []
 
-    color_change(PAWN_KILL_VECTORS).each do |vector|
-      possible_position = [@pos[0] + vector[0],@pos[1] + vector[1]]
+    color_change(PAWN_KILL_DIRECTIONS).each do |direction|
+      possible_position = [@pos[0] + direction[0],@pos[1] + direction[1]]
       next unless @board.on_board?(possible_position)
       if check_enemy_color(possible_position) && !@board.empty_space?(possible_position)
         potential_kill_moves << possible_position
@@ -92,10 +92,10 @@ class Pawn < Piece
   end
 
   def pawn_vectors
-    moved? ? PAWN_VECTORS.take(1) : PAWN_VECTORS
+    moved? ? PAWN_DIRECTIONS.take(1) : PAWN_DIRECTIONS
   end
 
-  def color_change(available_moves)
-    available_moves.map { |vector| @color == "black" ? [vector[0] * -1, vector[1] * -1] : vector  }
+  def color_change(current_moves)
+    current_moves.map { |direction| @color == "black" ? [direction[0] * -1, direction[1] * -1] : direction  }
   end
 end

@@ -25,6 +25,10 @@ module Display
     puts "Cursor: #{@cursor}"
     puts "Position: #{self[@cursor].pos}"
     puts "Moves: #{self[@cursor].moves}"
+    puts "White King: #{self.king_position("white")}"
+    puts "Black King: #{self.king_position("black")}"
+    puts "In check? White: #{self.in_check?("white")}"
+    puts "In check? Black: #{self.in_check?("black")}" 
   end
 
 

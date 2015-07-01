@@ -1,6 +1,4 @@
 #refactor pieces
-#validate actual movements
-#fix pawn moved
 #check
 #commit to git
 
@@ -37,31 +35,31 @@ class Board
   end
 
   def populate_board
-    @board.each_with_index do | row_array , row |
-      row_array.each_index do |col|
-        if row == 0
-          self[[row,col]] = PIECE_ORDER[col].new(self,[row,col],"white")
-        elsif row == 1
-          self[[row,col]] = Pawn.new(self,[row,col],"white")
-        elsif row == 6
-          self[[row,col]] = Pawn.new(self,[row,col],"black")
-        elsif row == 7
-          self[[row,col]] = PIECE_ORDER[col].new(self,[row,col],"black")
+    @board.each_with_index do | row , row_idx |
+      row.each_index do |col_idx|
+        if row_idx == 0
+          self[[row_idx,col_idx]] = PIECE_ORDER[col_idx].new(self,[row_idx,col_idx],"white")
+        elsif row_idx == 1
+          self[[row_idx,col_idx]] = Pawn.new(self,[row_idx,col_idx],"white")
+        elsif row_idx == 6
+          self[[row_idx,col_idx]] = Pawn.new(self,[row_idx,col_idx],"black")
+        elsif row_idx == 7
+          self[[row_idx,col_idx]] = PIECE_ORDER[col_idx].new(self,[row_idx,col_idx],"black")
         else
-          self[[row,col]] = EmptySpace.new([row,col])
+          self[[row_idx,col_idx]] = EmptySpace.new([row_idx,col_idx])
         end
       end
     end
   end
 
   def render
-    @board.each_with_index do |row,i|
-      row.each_with_index do |cell,j|
-        if  [i,j] == @cursor
+    @board.each_with_index do |row,row_idx|
+      row.each_with_index do |cell,col_idx|
+        if  [row_idx,col_idx] == @cursor
           print " #{cell.symbol} ".colorize(:background => :yellow)
-        elsif self[@cursor].moves.include?([i,j])
+        elsif self[@cursor].moves.include?([row_idx,col_idx])
           print " #{cell.symbol} ".colorize(:background => :green)
-        elsif (i.odd? && j.even?) || (i.even? && j.odd?)
+        elsif (row_idx.odd? && col_idx.even?) || (row_idx.even? && col_idx.odd?)
           print " #{cell.symbol} ".colorize(:background => :red)
         else
           print " #{cell.symbol} ".colorize(:background => :blue)
@@ -74,19 +72,51 @@ class Board
 
   def move!(movement)
     start_pos, end_pos = movement
-    unless empty_space?(end_pos)
-        @killed_pieces << self[end_pos].symbol
-        self[end_pos] = EmptySpace.new
+    if self[start_pos].moves.include?(end_pos)
+
+      unless empty_space?(end_pos)
+          @killed_pieces << self[end_pos].symbol
+          self[end_pos] = EmptySpace.new(end_pos)
+      end
+      self[start_pos], self[end_pos] = self[end_pos], self[start_pos]
+      self[start_pos].pos, self[end_pos].pos = self[end_pos].pos, self[start_pos].pos
+
+      self[end_pos].moved = true if self[end_pos].is_a?(Pawn)
+    else
+      puts "Invalid move!" # check this
     end
-    self[start_pos], self[end_pos] = self[end_pos], self[start_pos]
-    self[start_pos].pos, self[end_pos].pos = self[end_pos].pos, self[start_pos].pos
+  end
+
+  def king_position(color)
+    @board.each_with_index do |row,row_idx|
+      row.each_with_index do |cell,col_idx|
+        return [row_idx,col_idx] if cell.is_a?(King) && cell.color == color
+      end
+    end
+  end
+
+  def in_check?(color)
+    all_color_moves = []
+
+    @board.each_with_index do |row,row_idx|
+      row.each_with_index do |cell,col_idx|
+        all_color_moves.concat(cell.moves) if cell.color == other_color(color)
+      end
+    end
+    all_color_moves.include?(king_position(color))
+
+  end
+
+
+  def other_color(color)
+    color = color == "white" ? "black" : "white"
   end
 
   def deep_dup
     blank_board = Board.blank_board
-    @board.each_with_index do |row,i|
-      row.each_with_index do |cell,j|
-        blank_board[[i,j]] = cell.dupe
+    @board.each_with_index do |row,row_idx|
+      row.each_with_index do |cell,col_idx|
+        blank_board[[row_idx,col_idx]] = cell.dupe
       end
     end
     blank_board

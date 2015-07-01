@@ -1,31 +1,37 @@
 require_relative 'pieces.rb'
 
 class SlidingPiece < Piece
-  XY_VECTORS = [[0,-1],[1,0],[0,1],[-1,0]]
-  DIAGONAL_VECTORS = [[1,1],[1,-1],[-1,-1],[-1,1]]
+  XY_DIRECTIONS = [[0,-1],[1,0],[0,1],[-1,0]]
+  DIAGONAL_DIRECTIONS = [[1,1],[1,-1],[-1,-1],[-1,1]]
 
   def initialize(board, pos, color)
     super
   end
 
-  def moves(move_direction)
+  def moves(move_directions)
     potential_moves = []
-    move_direction.each do |vector|
+    move_directions.each do |direction|
 
-      (@board.length).times do |idx|
-        possible_position = [@pos[0] + (vector[0] * idx),@pos[1] + (vector[1] * idx)]
-        next if possible_position == @pos
-        break unless @board.on_board?(possible_position)
+    potential_moves.concat(add_position(direction))
 
-        if @board.empty_space?(possible_position)
-          potential_moves << possible_position
-          next
-        elsif check_enemy_color(possible_position)
-          potential_moves << possible_position
-        end
-        break
+    end
+    potential_moves
+  end
 
+  def add_position(direction)
+    potential_moves = []
+    (@board.length).times do |idx|
+      possible_position = [@pos[0] + (direction[0] * idx),@pos[1] + (direction[1] * idx)]
+      next if possible_position == @pos
+      break unless @board.on_board?(possible_position)
+
+      if @board.empty_space?(possible_position)
+        potential_moves << possible_position
+        next
+      elsif check_enemy_color(possible_position)
+        potential_moves << possible_position
       end
+      break
     end
     potential_moves
   end
@@ -44,7 +50,7 @@ class Rook < SlidingPiece
   end
 
   def move_directions
-    XY_VECTORS
+    XY_DIRECTIONS
   end
 end
 
@@ -61,7 +67,7 @@ class Bishop < SlidingPiece
   end
 
   def move_directions
-    DIAGONAL_VECTORS
+    DIAGONAL_DIRECTIONS
   end
 end
 
@@ -78,6 +84,6 @@ class Queen < SlidingPiece
   end
 
   def move_directions
-    DIAGONAL_VECTORS + XY_VECTORS
+    DIAGONAL_DIRECTIONS + XY_DIRECTIONS
   end
 end
