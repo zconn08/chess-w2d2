@@ -11,28 +11,24 @@ class SlidingPiece < Piece
   def moves(move_directions)
     potential_moves = []
     move_directions.each do |direction|
-
-    potential_moves.concat(add_position(direction))
-
+      potential_moves.concat(moves_in_dir(direction))
     end
+
     potential_moves
   end
 
-  def add_position(direction)
+  def moves_in_dir(direction)
     potential_moves = []
-    (@board.length).times do |idx|
-      possible_position = [@pos[0] + (direction[0] * idx),@pos[1] + (direction[1] * idx)]
-      next if possible_position == @pos
-      break unless @board.on_board?(possible_position)
 
-      if @board.empty_space?(possible_position)
-        potential_moves << possible_position
-        next
-      elsif check_enemy_color(possible_position)
-        potential_moves << possible_position
-      end
-      break
+    (1...@board.length).each do |idx|
+      possible_position = [@pos[0] + (direction[0] * idx), @pos[1] + (direction[1] * idx)]
+
+      break unless can_move?(possible_position)
+
+      potential_moves << possible_position
+      break if check_enemy_color(possible_position)
     end
+
     potential_moves
   end
 end
@@ -42,7 +38,7 @@ class Rook < SlidingPiece
 
   def initialize(board, pos, color)
     super
-    @symbol = color =="white" ? "\u2656" : "\u265C"
+    @symbol = color == "white" ? "\u2656" : "\u265C"
   end
 
   def moves

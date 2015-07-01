@@ -24,11 +24,14 @@ module Display
   def debugging_output
     puts "Cursor: #{@cursor}"
     puts "Position: #{self[@cursor].pos}"
+    puts "Valid Moves: #{self[@cursor].valid_moves}"
     puts "Moves: #{self[@cursor].moves}"
     puts "White King: #{self.king_position("white")}"
     puts "Black King: #{self.king_position("black")}"
     puts "In check? White: #{self.in_check?("white")}"
-    puts "In check? Black: #{self.in_check?("black")}" 
+    puts "In check? Black: #{self.in_check?("black")}"
+    puts "Checkmate White: #{self.check_mate?("white")}"
+    puts "Checkmate Black: #{self.check_mate?("black")}"
   end
 
 

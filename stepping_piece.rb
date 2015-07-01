@@ -12,9 +12,12 @@ class SteppingPiece < Piece
     potential_moves = []
     move_directions.each do |direction|
       possible_position = [@pos[0] + direction[0], @pos[1] + direction[1]]
-      next unless @board.on_board?(possible_position) && (@board.empty_space?(possible_position) || check_enemy_color(possible_position))
+
+      next unless can_move?(possible_position)
+
       potential_moves << possible_position
     end
+
     potential_moves
   end
 end
