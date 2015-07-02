@@ -1,8 +1,11 @@
-require_relative 'pieces.rb'
+require_relative 'piece.rb'
+
 
 class SteppingPiece < Piece
-  KING_DIRECTIONS = [[0,-1],[1,0],[0,1],[-1,0],[1,1],[1,-1],[-1,-1],[-1,1]]
-  KNIGHT_DIRECTIONS = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]
+  KING_DIRECTIONS = [[0, -1], [1, 0], [0, 1], [-1, 0],
+                     [1, 1], [1, -1], [-1, -1], [-1, 1]]
+  KNIGHT_DIRECTIONS = [[-2, -1], [-2, 1], [-1, -2], [-1, 2],
+                       [1, -2], [1, 2], [2, -1], [2, 1]]
 
   def initialize(board, pos, color)
     super
@@ -10,8 +13,11 @@ class SteppingPiece < Piece
 
   def moves(move_directions)
     potential_moves = []
+
+    x, y = pos
     move_directions.each do |direction|
-      possible_position = [@pos[0] + direction[0], @pos[1] + direction[1]]
+      dx, dy = direction
+      possible_position = [x + dx, y + dy]
 
       next unless can_move?(possible_position)
 
@@ -19,39 +25,5 @@ class SteppingPiece < Piece
     end
 
     potential_moves
-  end
-end
-
-class Knight < SteppingPiece
-  attr_accessor :symbol
-
-  def initialize(board, pos, color)
-    super
-    @symbol = color =="white" ? "\u2658" : "\u265E"
-  end
-
-  def moves
-    super(move_directions)
-  end
-
-  def move_directions
-    KNIGHT_DIRECTIONS
-  end
-end
-
-class King < SteppingPiece
-  attr_accessor :symbol
-
-  def initialize(board, pos, color)
-    super
-    @symbol = color =="white" ? "\u2654" : "\u265A"
-  end
-
-  def moves
-    super(move_directions)
-  end
-
-  def move_directions
-    KING_DIRECTIONS
   end
 end

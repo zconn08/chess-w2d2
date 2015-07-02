@@ -1,8 +1,8 @@
-require_relative 'pieces.rb'
+require_relative 'piece.rb'
 
 class SlidingPiece < Piece
-  XY_DIRECTIONS = [[0,-1],[1,0],[0,1],[-1,0]]
-  DIAGONAL_DIRECTIONS = [[1,1],[1,-1],[-1,-1],[-1,1]]
+  ORTHOGONAL_DIRECTIONS = [[0, -1], [1, 0], [0, 1], [-1, 0]]
+  DIAGONAL_DIRECTIONS = [[1, 1], [1, -1], [-1, -1], [-1, 1]]
 
   def initialize(board, pos, color)
     super
@@ -20,8 +20,10 @@ class SlidingPiece < Piece
   def moves_in_dir(direction)
     potential_moves = []
 
-    (1...@board.length).each do |idx|
-      possible_position = [@pos[0] + (direction[0] * idx), @pos[1] + (direction[1] * idx)]
+    x, y = pos
+    dx, dy = direction
+    (1...board.length).each do |i|
+      possible_position = [x + (dx * i), y + (dy * i)]
 
       break unless can_move?(possible_position)
 
@@ -30,56 +32,5 @@ class SlidingPiece < Piece
     end
 
     potential_moves
-  end
-end
-
-class Rook < SlidingPiece
-  attr_accessor :symbol
-
-  def initialize(board, pos, color)
-    super
-    @symbol = color == "white" ? "\u2656" : "\u265C"
-  end
-
-  def moves
-    super(move_directions)
-  end
-
-  def move_directions
-    XY_DIRECTIONS
-  end
-end
-
-class Bishop < SlidingPiece
-  attr_accessor :symbol
-
-  def initialize(board, pos, color)
-    super
-    @symbol = color =="white" ? "\u2657" : "\u265D"
-  end
-
-  def moves
-    super(move_directions)
-  end
-
-  def move_directions
-    DIAGONAL_DIRECTIONS
-  end
-end
-
-class Queen < SlidingPiece
-  attr_accessor :symbol
-
-  def initialize(board, pos, color)
-    super
-    @symbol = color =="white" ? "\u2655" : "\u265B"
-  end
-
-  def moves
-    super(move_directions)
-  end
-
-  def move_directions
-    DIAGONAL_DIRECTIONS + XY_DIRECTIONS
   end
 end
